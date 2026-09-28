@@ -24,7 +24,7 @@ Repository for the Neural Networks laboratory, "Alexandru Ioan Cuza" University,
 ## Table of contents
 
 * [Lab01](./Lab01)
-
+* [Lab02](./Lab02) (Homework 1: Solve linear system)
 
 ## [2025 archive](https://github.com/Tensor-Reloaded/Neural-Networks-Template-2025)
 
