@@ -5,6 +5,7 @@
 ***
 Lab Resources: 
 * [NumpyExcercises.ipynb](./NumpyExcercises.ipynb)
+* [ProgrammingChallenge](./ProgrammingChallenge.ipynb)
 
 ***
 Homework 1:
