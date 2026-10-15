@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Perceptron · One sample, one update</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f5f8;color:#172337;font:17px/1.5 system-ui,sans-serif}main{max-width:1250px;margin:0 auto;padding:28px}h1{font-size:36px;line-height:1.1;margin:8px 0 12px}h2{font-size:20px;margin:0 0 12px}.eyebrow{color:#37618a;font-size:13px;letter-spacing:.12em;font-weight:700}.intro{max-width:900px}.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr);gap:20px}.panel{background:white;padding:22px;border-radius:12px;border:1px solid #d8dfe8}.row{display:grid;grid-template-columns:65px 1fr 72px;gap:10px;align-items:center;margin:14px 0}input[type=range]{width:100%;accent-color:#1768ac}input[type=number],select{font:inherit;width:100%;padding:7px;border:1px solid #aebccc;border-radius:4px}.sample{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.sample label{font-size:14px}button{font:inherit;border:1px solid #9bb0c6;border-radius:5px;padding:9px 12px;background:#fff;cursor:pointer}button.primary{background:#1768ac;color:#fff;border-color:#1768ac}button:hover{filter:brightness(.95)}.buttons{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.6 ui-monospace,monospace;background:#f2f5f9;padding:14px;border-radius:6px}.small{font-size:14px;color:#46566b}svg{width:100%;height:auto;display:block}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px}.legend span:first-child{color:#1768ac}.legend span:nth-child(2){color:#9b4d0d}output{font-variant-numeric:tabular-nums;font-size:15px}#message{min-height:24px;color:#8b3608}#work{min-height:190px}@media(max-width:850px){.layout{grid-template-columns:1fr}main{padding:16px}h1{font-size:28px}}
+
+.update-rule{margin-top:26px;padding-top:24px;border-top:1px solid #d8dfe8;font-size:16px;line-height:1.6}
+.update-rule h2{font-size:23px;margin-bottom:8px}.update-rule>p{margin:0 0 20px;color:#46566b}
+.algorithm-steps{padding-left:28px;margin:0}.algorithm-steps>li{padding-left:6px;margin:0 0 22px}
+.algorithm-steps>li::marker{color:#1768ac;font-weight:750}.algorithm-steps strong{display:block;margin-bottom:8px}
+.algorithm-steps code{display:block;background:#f2f5f9;border-left:3px solid #7f9fbe;padding:11px 13px;font:15px/1.85 ui-monospace,monospace;overflow-wrap:anywhere}
+.decision-cases{display:grid;gap:7px}.decision-cases span{display:flex;flex-wrap:wrap;gap:10px 24px;padding:7px 13px;background:#f2f5f9}.decision-cases b{font-weight:650}
+.step-note{font-size:14px;color:#46566b;margin:8px 0 0}.rule-reminder{padding:15px 17px;background:#eaf1f8;border-radius:6px}.rule-reminder p{margin:7px 0 0}.rule-reminder code{font:14px/1.7 ui-monospace,monospace;white-space:normal}
+</style></head><body><main>
+<div class="eyebrow">NEURAL NETWORKS 2026 · LAB 02 · PART B</div>
+<h1>One sample. One update.</h1>
+<p class="intro">Move the weights and bias to explore the boundary. Then calculate the update on paper, reveal the arithmetic, and apply it. The white marker is the current sample; background points are visual references, not a training run.</p>
+<div class="layout"><section class="panel"><h2>The decision boundary</h2>
+<svg id="plot" viewBox="0 0 650 580" role="img" aria-label="Two-dimensional perceptron decision regions with a selected labelled sample"></svg>
+<div class="legend"><span>○ Label +1 · blue region predicts +1</span><span>□ Label −1 · orange region predicts −1</span></div>
+<p class="small">Black solid line: current boundary. Dashed line: boundary before the last update. The normal arrow points towards increasing score. A score is not a probability.</p>
+</section><section class="panel"><h2>Current model</h2>
+<pre id="model"></pre>
+<div class="row"><label for="w1">w₁</label><input id="w1" type="range" min="-2" max="2" step="any" value="0.7092"><output id="w1value"></output></div>
+<div class="row"><label for="w2">w₂</label><input id="w2" type="range" min="-2" max="2" step="any" value="-0.4812"><output id="w2value"></output></div>
+<div class="row"><label for="bias">bias</label><input id="bias" type="range" min="-2" max="2" step="any" value="-0.6033"><output id="biasvalue"></output></div>
+<div class="sample"><label>x₁<input id="x1" type="number" value="1.993" min="-3" max="3" step="0.001"></label><label>x₂<input id="x2" type="number" value="-2.936" min="-3" max="3" step="0.001"></label><label>True label<select id="truth"><option value="-1">−1</option><option value="1">+1</option></select></label></div>
+<label class="small" for="eta">Learning rate η (0–1)</label><input id="eta" type="number" min="0" max="1" step="0.01" value="0.1">
+<div class="buttons"><button id="reset">Load exercise</button><button id="reveal">Reveal calculation</button><button class="primary" id="apply">Apply one update</button></div>
+<div id="message" role="status"></div>
+<pre id="work" aria-live="polite">Before revealing: calculate z, prediction, error,
+Δw₁, Δw₂, Δb, then the new w and b.</pre>
+<section class="update-rule" aria-labelledby="update-rule-title">
+<h2 id="update-rule-title">How one update works</h2>
+<p>Use the current weights to make a prediction, then correct them using the true label.</p>
+<ol class="algorithm-steps">
+<li><strong>Calculate the score</strong><code>z = w₁ · x₁ + w₂ · x₂ + b</code></li>
+<li><strong>Choose a label</strong><div class="decision-cases"><span>If z ≥ 0 <b>predict +1</b></span><span>If z &lt; 0 <b>predict −1</b></span></div></li>
+<li><strong>Measure the mistake</strong><code>error = prediction − true label</code></li>
+<li><strong>Update both weights and the bias</strong><code>w₁ ← w₁ − η · error · x₁<br>w₂ ← w₂ − η · error · x₂<br>b &nbsp;← b &nbsp;− η · error</code><p class="step-note">η is the learning rate. Use the same error in all three updates.</p></li>
+</ol>
+<div class="rule-reminder"><strong>Why ±2?</strong><p>Our labels are −1 and +1. A wrong prediction gives <code>+1 − (−1) = +2</code> or <code>−1 − (+1) = −2</code>.</p><p><strong>Correct prediction → error = 0 → no change.</strong></p></div>
+</section>
+</section></div>
+</main><script>
+'use strict';
+function stepPerceptron(w,b,x,y,eta){
+ const z=w[0]*x[0]+w[1]*x[1]+b;
+ const prediction=z>=0?1:-1,error=prediction-y;
+ const delta=w.map((_,i)=>-eta*error*x[i]),db=-eta*error;
+ const next=w.map((v,i)=>v+delta[i]),nextB=b+db;
+ return {z,prediction,error,delta,db,next,nextB,after:next[0]*x[0]+next[1]*x[1]+nextB};
+}
+const el=id=>document.getElementById(id),fmt=n=>(n>=0?'+':'')+n.toFixed(4);
+let previous=null;
+function read(){
+ const w=[+el('w1').value,+el('w2').value],b=+el('bias').value,x=[+el('x1').value,+el('x2').value],y=+el('truth').value,eta=+el('eta').value;
+ if(['x1','x2','eta'].some(id=>el(id).value.trim()==='')||![...w,b,...x,y,eta].every(Number.isFinite)||x.some(v=>Math.abs(v)>3)||eta<0||eta>1){throw Error('Use finite coordinates between −3 and +3, and a learning rate between 0 and 1.');}
+ return {w,b,x,y,eta};
+}
+const sx=x=>90+(x+3)/6*480,sy=y=>530-(y+3)/6*480;
+function svgBoundary(w,b,dashed=false){
+ const points=[];
+ if(Math.abs(w[1])>1e-12)for(const x of [-3,3]){const y=-(w[0]*x+b)/w[1];if(y>=-3&&y<=3)points.push([x,y]);}
+ if(Math.abs(w[0])>1e-12)for(const y of [-3,3]){const x=-(w[1]*y+b)/w[0];if(x>=-3&&x<=3)points.push([x,y]);}
+ const unique=points.filter((p,i)=>!points.slice(0,i).some(q=>Math.hypot(p[0]-q[0],p[1]-q[1])<1e-8));
+ if(unique.length<2)return '';
+ return `<line x1="${sx(unique[0][0])}" y1="${sy(unique[0][1])}" x2="${sx(unique[1][0])}" y2="${sy(unique[1][1])}" stroke="${dashed?'#66788c':'#162235'}" stroke-width="${dashed?2:3}" ${dashed?'stroke-dasharray="8 6"':''}/>`;
+}
+function draw(state){
+ const {w,b,x,y}=state;let svg='<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#162235"/></marker></defs>';
+ const n=48;
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++){
+  const xx=-3+(i+.5)*6/n,yy=-3+(j+.5)*6/n;
+  svg+=`<rect x="${sx(-3+i*6/n)}" y="${sy(-3+(j+1)*6/n)}" width="${480/n+.3}" height="${480/n+.3}" fill="${w[0]*xx+w[1]*yy+b>=0?'#e2edf8':'#faebdc'}"/>`;
+ }
+ for(let t=-3;t<=3;t++){
+  svg+=`<line x1="${sx(t)}" y1="50" x2="${sx(t)}" y2="530" stroke="#ffffff"/><line x1="90" y1="${sy(t)}" x2="570" y2="${sy(t)}" stroke="#ffffff"/><text x="${sx(t)}" y="552" text-anchor="middle" font-size="14">${t}</text><text x="75" y="${sy(t)+5}" text-anchor="end" font-size="14">${t}</text>`;
+ }
+ svg+='<text x="590" y="555" font-size="16">x₁</text><text x="24" y="38" font-size="16">x₂</text>';
+ if(previous)svg+=svgBoundary(previous.w,previous.b,true);
+ svg+=svgBoundary(w,b);
+ const norm=Math.hypot(...w);
+ if(norm>1e-12)svg+=`<line x1="${sx(0)}" y1="${sy(0)}" x2="${sx(w[0]/norm)}" y2="${sy(w[1]/norm)}" stroke="#162235" stroke-width="2" marker-end="url(#arrow)"/><text x="${sx(w[0]/norm)+12}" y="${sy(w[1]/norm)}" font-size="14">w direction</text>`;
+ else svg+='<text x="70" y="35" font-size="15">w = 0: constant prediction, no unique line</text>';
+ for(const [a,c,label] of [[-2,-1,-1],[-1,-2,-1],[1,2,1],[2,1,1]]){
+  svg+=label===1?`<circle cx="${sx(a)}" cy="${sy(c)}" r="7" fill="#1768ac"/>`:`<rect x="${sx(a)-6}" y="${sy(c)-6}" width="12" height="12" fill="#c76319"/>`;
+ }
+ svg+=`<circle cx="${sx(x[0])}" cy="${sy(x[1])}" r="13" fill="white" stroke="#172337" stroke-width="3"/><text x="${Math.min(530,Math.max(80,sx(x[0])-30))}" y="${Math.max(72,sy(x[1])-22)}" font-size="15" font-weight="700">sample · y=${y===1?'+1':'−1'}</text>`;
+ el('plot').innerHTML=svg;
+ el('model').textContent=`z = w₁x₁ + w₂x₂ + b\nprediction = +1 if z ≥ 0, else −1\nw = [${fmt(w[0])}, ${fmt(w[1])}]\nb = ${fmt(b)}`;
+ for(const [id,v] of [['w1',w[0]],['w2',w[1]],['bias',b]])el(id+'value').textContent=fmt(v);
+}
+function working(s,r){return `z = (${fmt(s.w[0])})·(${fmt(s.x[0])})\n  + (${fmt(s.w[1])})·(${fmt(s.x[1])}) + (${fmt(s.b)})\n  = ${r.z.toFixed(7)}\nprediction = ${r.prediction}; true = ${s.y}\nerror = ${r.prediction} − (${s.y}) = ${r.error}\nΔw = [${fmt(r.delta[0])}, ${fmt(r.delta[1])}]\nΔb = ${fmt(r.db)}\nw_new = [${fmt(r.next[0])}, ${fmt(r.next[1])}]\nb_new = ${fmt(r.nextB)}\nz_new on this sample = ${r.after.toFixed(7)}`;}
+function guard(fn){try{el('message').textContent='';fn();}catch(e){el('message').textContent=e.message;}}
+function setModel(w,b){for(const [id,v] of [['w1',w[0]],['w2',w[1]],['bias',b]]){el(id).min=Math.min(-2,Math.floor(v)-1);el(id).max=Math.max(2,Math.ceil(v)+1);el(id).value=v;}}
+for(const id of ['w1','w2','bias','x1','x2','truth','eta'])el(id).addEventListener('input',()=>guard(()=>{previous=null;draw(read());el('work').textContent='Model/sample changed. Calculate before revealing.';}));
+el('reveal').addEventListener('click',()=>guard(()=>{const s=read();el('work').textContent=working(s,stepPerceptron(s.w,s.b,s.x,s.y,s.eta));}));
+el('apply').addEventListener('click',()=>guard(()=>{const s=read(),r=stepPerceptron(s.w,s.b,s.x,s.y,s.eta);previous={w:s.w.slice(),b:s.b};setModel(r.next,r.nextB);draw({...s,w:r.next,b:r.nextB});el('work').textContent=working(s,r);el('message').textContent=r.error===0?'Correct prediction: no parameters changed.':'Applied exactly one update; the dashed line is the previous boundary.';}));
+el('reset').addEventListener('click',()=>{previous=null;setModel([.7092,-.4812],-.6033);el('x1').value=1.993;el('x2').value=-2.936;el('truth').value=-1;el('eta').value=.1;el('message').textContent='';el('work').textContent='Before revealing: calculate z, prediction, error,\nΔw₁, Δw₂, Δb, then the new w and b.';draw(read());});
+draw(read());
+</script></body></html>

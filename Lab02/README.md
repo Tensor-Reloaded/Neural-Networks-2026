@@ -1,19 +1,12 @@
-## Lab 2
+# Laboratorul 2 · NumPy + Perceptron
 
-### Numpy + Linear Algebra
+**Începe cu [00_START.md](00_START.md)**: ordinea predării, durata și aplicația pentru fiecare material.
 
-***
-Lab Resources: 
-* [NumpyExcercises.ipynb](./NumpyExcercises.ipynb)
+- `01_NumPy/`: lecție, exerciții, tema 1 și datele ei.
+- `02_Perceptron/`: lecție și playground.
+- `03_Optional/`: challenge și metrici, dacă rămâne timp.
+- `90_HTML/`: variante pentru proiector și consultare.
 
-***
-Homework 1:
-- [Statement](https://drive.google.com/file/d/1ox2n3n8kmjxGE2Z-MulJIAP2GMqqaWSh/view)
-- [Notebook](Assignment1.ipynb)
-- Deadline: Submit the assignment before Lab 3.
+Tema 1 se predă înainte de Lab 3. Perceptronul este explicație suplimentară a cursului 2, nu o cerință evaluată suplimentară.
 
-***
-For self-study (all students):
-* [Essence of linear algebra](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab) (linear transformations; matrix multiplication)
-
-***
+[Enunț tema 1](https://drive.google.com/file/d/1ox2n3n8kmjxGE2Z-MulJIAP2GMqqaWSh/view) · [Essence of linear algebra](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)

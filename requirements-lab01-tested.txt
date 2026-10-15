@@ -1,0 +1,8 @@
+# Exact direct package versions tested on macOS with Python 3.13.5
+numpy==2.5.3
+matplotlib==3.11.2
+jupyterlab==4.6.4
+nbformat==5.11.1
+nbclient==0.11.0
+nbconvert==7.17.1
+ipykernel==7.4.0

@@ -1,0 +1,4 @@
+-r requirements-lab01.txt
+scikit-learn>=1.6,<2
+timed-decorator>=1.7,<2
+tqdm>=4.66,<5

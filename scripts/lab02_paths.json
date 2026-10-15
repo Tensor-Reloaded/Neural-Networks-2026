@@ -1,0 +1,14 @@
+{
+  "SecondLab.ipynb": "01_NumPy/01_NumPy_si_tema.ipynb",
+  "NumpyExcercises.ipynb": "01_NumPy/02_Exercitii_NumPy.ipynb",
+  "Assignment1.ipynb": "01_NumPy/03_Tema_1.ipynb",
+  "system.txt": "01_NumPy/system.txt",
+  "PerceptronLab.ipynb": "02_Perceptron/01_Perceptron.ipynb",
+  "PerceptronPlayground.html": "02_Perceptron/02_Playground.html",
+  "ProgrammingChallenge.ipynb": "03_Optional/01_Programming_challenge.ipynb",
+  "MetricsPractice.ipynb": "03_Optional/02_Metrici.ipynb",
+  "SecondLab-projector.html": "90_HTML/01_NumPy-proiector.html",
+  "PerceptronLab-projector.html": "90_HTML/02_Perceptron-proiector.html",
+  "SecondLab.html": "90_HTML/03_NumPy-cu-cod.html",
+  "PerceptronLab.html": "90_HTML/04_Perceptron-cu-cod.html"
+}
