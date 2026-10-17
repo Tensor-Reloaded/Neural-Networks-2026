@@ -10,7 +10,7 @@ Lab Resources:
 
 ***
 Homework 3:
-- Kaggle competition link: TODO
+- Kaggle competition link: https://www.kaggle.com/t/335cc92e0ed644d39c4a18a6b22bba78
 - Deadline: Submit the assignment before Lab 7
 ***
 For self-study (all students):
