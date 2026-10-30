@@ -27,7 +27,7 @@ Repository for the Neural Networks laboratory, "Alexandru Ioan Cuza" University,
 * [Lab02](./Lab02) (Homework 1: Solve linear system)
 * [Lab03](./Lab03) (Homework 2: Implement the perceptron algorithm)
 * [Lab04](./Lab04) (Homework 3: Implement the multi-layer perceptron)
-* [Lab05](./Lab05)
+* [Lab05](./Lab05) — Sigmoid vs ReLU, momentum, Adam and dropout ([notebook](./Lab05/Lab05.ipynb) · [Colab](https://colab.research.google.com/github/Tensor-Reloaded/Neural-Networks-2026/blob/main/Lab05/Lab05.ipynb))
 * [Lab06](./Lab06) 
 
 
